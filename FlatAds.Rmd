@@ -1,0 +1,252 @@
+---
+title: "FlatAds"
+date: "`r Sys.Date()`"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+```{r customViz, include=FALSE}
+# source('scrapgratka.R')
+shp <- c('21', '23')
+names(shp) <- c('Agencyjna', 'Prywatna')
+plotGratka <- function(district){
+    Plot.Interactive <- ggplot(data = gratka.oferty[dzielnica == district & powierzchnia %between% c(50, 80) & cena_m %between% c(5, 10)],
+                               aes(x = powierzchnia, y = cena_m, col = rok))  + 
+        geom_point_interactive(aes(data_id = link, tooltip = paste0('Lokalizacja: ', lokalizacja, '\n',
+                                                                    'CenaM_tys: ', round(cena_m, 3), '\n',
+                                                                    'Pow: ', powierzchnia, '\n',
+                                                                    'Rok: ', rok, '\n'),
+                                   onclick = onclick), size = 6, alpha = .6 ) +
+        scale_color_gradient2(midpoint = 1980, low = 'red', high = 'blue', mid = 'orange') + 
+        labs(x = 'Powierzchnia [m2]', y = 'Cena za metr [tys PLN]') + 
+        xlim(c(50, 80)) + ylim(c(5,10.5)) +
+        theme_bw()+
+        theme(legend.position = 'bottom', legend.title = element_blank(), 
+              text = element_text(size = 20), title = element_text(size = 24))+
+        guides(colour = guide_colourbar(barwidth = 18))
+    
+    ggiraph(code = print(Plot.Interactive),
+            hover_css = "fill-opacity:.3;cursor:pointer;", zoom_max = 7, width_svg = 15, height_svg = 12)
+}
+
+plotOtomoto <- function(district){
+    Plot.Interactive <- ggplot(data = otomoto.oferty[dzielnica == district & powierzchnia %between% c(50, 80) & cena_m %between% c(5, 10)],
+                               aes(x = powierzchnia, y = cena_m, col = rok, shape = typOferty))  + 
+        geom_point_interactive(aes(data_id = link, tooltip = paste0('Lokalizacja: ', lokalizacja, '\n',
+                                                                    'CenaM_tys: ', round(cena_m, 3), '\n',
+                                                                    'Pow: ', powierzchnia, '\n',
+                                                                    'Rok: ', rok, '\n',
+                                                                    'TypOferty: ', typOferty),
+                                   onclick = onclick), size = 6, alpha = .6 ) +
+        scale_color_gradient2(midpoint = 1980, low = 'red', high = 'blue', mid = 'orange') + 
+        scale_size_manual(values = shp) +
+        labs(x = 'Powierzchnia [m2]', y = 'Cena za metr [tys PLN]') + 
+        xlim(c(50, 80)) + ylim(c(5,10.5)) +
+        theme_bw()+
+        theme(legend.position = 'bottom', legend.title = element_blank(), 
+              text = element_text(size = 20), title = element_text(size = 24))+
+        guides(colour = guide_colourbar(barwidth = 18), size = guide_legend())
+    
+    ggiraph(code = print(Plot.Interactive),
+            hover_css = "fill-opacity:.3;cursor:pointer;", zoom_max = 7, width_svg = 15, height_svg = 12)
+}
+```
+
+
+Ursynow
+=======================================================================
+
+
+Row
+-----------------------------------------------------------------------
+
+### Gratka
+
+```{r Ursynow - Gratka, echo=FALSE}
+
+plotGratka('Ursynow')
+
+```
+
+### OtoDom
+
+```{r Ursynow - otomoto, echo=FALSE}
+
+plotOtomoto('Ursynow')
+
+```
+
+
+Sluzew
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Sluzew
+
+```{r Gratka - Sluzew, echo=FALSE}
+
+plotGratka('Sluzew')
+
+```
+
+### OtoDom
+
+```{r Sluzew - otomoto, echo=FALSE}
+
+plotOtomoto('Sluzew')
+
+```
+
+
+Mokotow
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Mokotow
+
+```{r Mokotow - Gratka, echo=FALSE}
+
+plotGratka('Mokotow')
+
+```
+
+### OtoDom
+
+```{r Mokotow - otomoto, echo=FALSE}
+
+plotOtomoto('Mokotow')
+
+```
+
+
+Muranow
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Muranow
+
+```{r Muranow - Gratka, echo=FALSE}
+
+plotGratka('Muranow')
+
+```
+
+### OtoDom
+
+```{r Muranow - otomoto, echo=FALSE}
+
+plotOtomoto('Muranow')
+
+```
+
+
+Wola
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Wola
+
+```{r Wola - Gratka, echo=FALSE}
+
+plotGratka('Wola')
+
+```
+
+### OtoDom
+
+```{r Wola - otomoto, echo=FALSE}
+
+plotOtomoto('Wola')
+
+```
+
+
+Ochota
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Ochota
+
+```{r Ochota - Gratka, echo=FALSE}
+
+plotGratka('Ochota')
+
+```
+
+### OtoDom
+
+```{r Ochota - otomoto, echo=FALSE}
+
+plotOtomoto('Ochota')
+
+```
+
+
+Bielany
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Bielany
+
+```{r Bielany - Gratka, echo=FALSE}
+
+plotGratka('Bielany')
+
+```
+
+### OtoDom
+
+```{r Bielany - otomoto, echo=FALSE}
+
+plotOtomoto('Bielany')
+
+```
+
+
+Zoliborz
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Zoliborz
+
+```{r Zoliborz, echo=FALSE}
+
+plotGratka('Zoliborz')
+
+```
+
+### OtoDom
+
+```{r Zoliborz - otomoto, echo=FALSE}
+
+plotOtomoto('Zoliborz')
+
+```
+
