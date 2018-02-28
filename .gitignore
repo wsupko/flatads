@@ -36,3 +36,6 @@ vignettes/*.pdf
 # R and Rproj files
 *.R
 *.Rproj
+
+# Input data
+/data

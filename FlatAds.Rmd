@@ -13,9 +13,9 @@ library(flexdashboard)
 
 ```{r customViz, include=FALSE}
 # source('scrapgratka.R')
-shp <- c('21', '23')
-names(shp) <- c('Agencyjna', 'Prywatna')
+
 plotGratka <- function(district){
+    
     Plot.Interactive <- ggplot(data = gratka.oferty[dzielnica == district & powierzchnia %between% c(50, 80) & cena_m %between% c(5, 10)],
                                aes(x = powierzchnia, y = cena_m, col = rok))  + 
         geom_point_interactive(aes(data_id = link, tooltip = paste0('Lokalizacja: ', lokalizacja, '\n',
@@ -35,8 +35,10 @@ plotGratka <- function(district){
             hover_css = "fill-opacity:.3;cursor:pointer;", zoom_max = 7, width_svg = 15, height_svg = 12)
 }
 
-plotOtomoto <- function(district){
-    Plot.Interactive <- ggplot(data = otomoto.oferty[dzielnica == district & powierzchnia %between% c(50, 80) & cena_m %between% c(5, 10)],
+plotOtodom <- function(district){
+    shp <- c('21', '23')
+    names(shp) <- c('Agencyjna', 'Prywatna')
+    Plot.Interactive <- ggplot(data = otodom.oferty[dzielnica == district & powierzchnia %between% c(50, 80) & cena_m %between% c(5, 10)],
                                aes(x = powierzchnia, y = cena_m, col = rok, shape = typOferty))  + 
         geom_point_interactive(aes(data_id = link, tooltip = paste0('Lokalizacja: ', lokalizacja, '\n',
                                                                     'CenaM_tys: ', round(cena_m, 3), '\n',
@@ -56,6 +58,32 @@ plotOtomoto <- function(district){
     ggiraph(code = print(Plot.Interactive),
             hover_css = "fill-opacity:.3;cursor:pointer;", zoom_max = 7, width_svg = 15, height_svg = 12)
 }
+
+plotNew <- function(){
+    Imp.New[, cena_m := powierzchnia/cena]
+    shp <- c('21', '23')
+    names(shp) <- c('Otodom', 'Gratka')
+    Plot.Interactive <- ggplot(data = Imp.New[powierzchnia %between% c(50, 80) & cena_m %between% c(5, 10)],
+                               aes(x = powierzchnia, y = cena_m, col = rok, shape = zrodlo))  + 
+        geom_point_interactive(aes(data_id = link, tooltip = paste0('Lokalizacja: ', lokalizacja, '\n',
+                                                                    'CenaM_tys: ', round(cena_m, 3), '\n',
+                                                                    'Pow: ', powierzchnia, '\n',
+                                                                    'Rok: ', rok, '\n',
+                                                                    'TypOferty: ', typOferty),
+                                   onclick = onclick), size = 6, alpha = .6 ) +
+        scale_color_gradient2(midpoint = 1980, low = 'red', high = 'blue', mid = 'orange') + 
+        scale_size_manual(values = shp) +
+        labs(x = 'Powierzchnia [m2]', y = 'Cena za metr [tys PLN]') + 
+        xlim(c(50, 80)) + ylim(c(5,10.5)) +
+        theme_bw()+
+        theme(legend.position = 'bottom', legend.title = element_blank(), 
+              text = element_text(size = 20), title = element_text(size = 24))+
+        guides(colour = guide_colourbar(barwidth = 18), size = guide_legend())
+    
+    ggiraph(code = print(Plot.Interactive),
+            hover_css = "fill-opacity:.3;cursor:pointer;", zoom_max = 7, width_svg = 15, height_svg = 12)
+}
+
 ```
 
 
@@ -76,9 +104,9 @@ plotGratka('Ursynow')
 
 ### OtoDom
 
-```{r Ursynow - otomoto, echo=FALSE}
+```{r Ursynow - otodom, echo=FALSE}
 
-plotOtomoto('Ursynow')
+plotOtodom('Ursynow')
 
 ```
 
@@ -100,9 +128,9 @@ plotGratka('Sluzew')
 
 ### OtoDom
 
-```{r Sluzew - otomoto, echo=FALSE}
+```{r Sluzew - otodom, echo=FALSE}
 
-plotOtomoto('Sluzew')
+plotOtodom('Sluzew')
 
 ```
 
@@ -124,9 +152,9 @@ plotGratka('Mokotow')
 
 ### OtoDom
 
-```{r Mokotow - otomoto, echo=FALSE}
+```{r Mokotow - otodom, echo=FALSE}
 
-plotOtomoto('Mokotow')
+plotOtodom('Mokotow')
 
 ```
 
@@ -148,9 +176,9 @@ plotGratka('Muranow')
 
 ### OtoDom
 
-```{r Muranow - otomoto, echo=FALSE}
+```{r Muranow - otodom, echo=FALSE}
 
-plotOtomoto('Muranow')
+plotOtodom('Muranow')
 
 ```
 
@@ -172,9 +200,9 @@ plotGratka('Wola')
 
 ### OtoDom
 
-```{r Wola - otomoto, echo=FALSE}
+```{r Wola - otodom, echo=FALSE}
 
-plotOtomoto('Wola')
+plotOtodom('Wola')
 
 ```
 
@@ -196,9 +224,9 @@ plotGratka('Ochota')
 
 ### OtoDom
 
-```{r Ochota - otomoto, echo=FALSE}
+```{r Ochota - otodom, echo=FALSE}
 
-plotOtomoto('Ochota')
+plotOtodom('Ochota')
 
 ```
 
@@ -220,9 +248,9 @@ plotGratka('Bielany')
 
 ### OtoDom
 
-```{r Bielany - otomoto, echo=FALSE}
+```{r Bielany - otodom, echo=FALSE}
 
-plotOtomoto('Bielany')
+plotOtodom('Bielany')
 
 ```
 
@@ -244,9 +272,25 @@ plotGratka('Zoliborz')
 
 ### OtoDom
 
-```{r Zoliborz - otomoto, echo=FALSE}
+```{r Zoliborz - otodom, echo=FALSE}
 
-plotOtomoto('Zoliborz')
+plotOtodom('Zoliborz')
 
 ```
 
+
+Nowe
+=======================================================================
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Nowe ogloszenia
+
+```{r Nowe, echo=FALSE}
+
+if (nrow(Imp.New) > 0){plotNew()}
+
+
+```
